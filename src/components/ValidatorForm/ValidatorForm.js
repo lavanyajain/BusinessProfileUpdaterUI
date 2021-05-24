@@ -92,6 +92,22 @@ const ValidatorForm = (props) => {
     validateForm();
   };
 
+  const handleSameAddress = (event) => {
+    if(event.target.checked) {
+      setLegalAddress(businessAddress);
+    } else  {
+      setLegalAddress({
+        line1: "",
+        line2: "",
+        city: "",
+        state: "",
+        country: "",
+        zip: "",
+      });
+      validateForm();
+    }
+  };
+
   const handleTaxIdChange = (event) => {
     setTaxId(event.target.value);
     validateForm();
@@ -149,7 +165,7 @@ const ValidatorForm = (props) => {
             />
           );
           break;
-        case "legalName":
+        case "legalName": 
           formElements.push(
             <InputElement
               name="legalName"
@@ -161,12 +177,22 @@ const ValidatorForm = (props) => {
           break;
         case "taxID":
           formElements.push(
+            <div>
+              <input
+              type="checkbox"
+              id="sameAddress"
+              name="sameAddress"
+              value="sameAddress"
+              onChange={handleSameAddress}
+            />
+            <label for="sameAddress"> legalAddress is same as Business Address</label>
             <InputElement
               name="taxID"
               label="PAN/EAN"
               handleInputChange={handleTaxIdChange}
               value={taxId}
             />
+            </div>
           );
           break;
         case "email":
@@ -234,6 +260,7 @@ const ValidatorForm = (props) => {
           break;
         case "businessAddress":
           formElements.push(
+           
             <div className={classes.address}>
               <label>Business Address</label>
               <InputElement
@@ -272,7 +299,7 @@ const ValidatorForm = (props) => {
                 handleInputChange={handleBusinessAddressChange}
                 value={businessAddress.country}
               />
-            </div>
+            </div>  
           );
           break;
       }
