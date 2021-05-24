@@ -2,6 +2,7 @@ import React from "react";
 import classes from "./ValidationForm.module.css";
 import { useState } from "react";
 import InputElement from "../UI/InputElement";
+import ResponseModal from "../ResponseModal/ResponseModal";
 
 const ValidatorForm = (props) => {
   const formElementsConfig = [
@@ -37,7 +38,6 @@ const ValidatorForm = (props) => {
   ];
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const [products, setProducts] = useState([]);
   const [companyName, setCompanyName] = useState("");
   const [legalName, setLegalName] = useState("");
   const [taxId, setTaxId] = useState("");
@@ -63,34 +63,48 @@ const ValidatorForm = (props) => {
   const [payments, setPayments] = useState(false);
   const [timesheet, setTimeSheet] = useState(false);
   const [payroll, setPayroll] = useState(false);
-  const[subscriptionResponse, setSubscriptionResponse] = useState({});
+  const[subscriptionResponse, setSubscriptionResponse] = useState();
   const[isLoading, setIsLoading] = useState(false);
   const[isError, setIsError] = useState(false);
   const[errorMessage, setErrorMessage] = useState("");
 
+  const validateForm = () => {
+    if(companyName.length === 0 || legalName.length === 0 || taxId.length === 0 || email.length === 0 || website.length === 0)
+      setIsFormValid(false);
+    else if(!accounts && !payments && !payroll && !timesheet)
+      setIsFormValid(false);
+    else if(businessAddress.line1.length === 0 || businessAddress.line2.length === 0 || businessAddress.city.length === 0 || businessAddress.state.length === 0 || businessAddress.country.length === 0 || businessAddress.zip.length === 0)
+      setIsFormValid(false);
+    else if(legalAddress.line1.length === 0 || legalAddress.line2.length === 0 || legalAddress.city.length === 0 || legalAddress.state.length === 0 || legalAddress.country.length === 0 || legalAddress.zip.length === 0)
+      setIsFormValid(false);
+    else 
+      setIsFormValid(true);
+      console.log(isFormValid);
+  }
+
   const handleCompanyChange = (event) => {
     setCompanyName(event.target.value);
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleLegalNameChange = (event) => {
     setLegalName(event.target.value);
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleTaxIdChange = (event) => {
     setTaxId(event.target.value);
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleWebsiteChange = (event) => {
     setWebsite(event.target.value);
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleLegalAddressChange = (event) => {
@@ -104,7 +118,7 @@ const ValidatorForm = (props) => {
       ...legalAddress,
       [key]: event.target.value,
     });
-    console.log(event.target.value);
+    validateForm();
   };
 
   const handleBusinessAddressChange = (event) => {
@@ -118,7 +132,7 @@ const ValidatorForm = (props) => {
       ...businessAddress,
       [key]: event.target.value,
     });
-    console.log(event.target.value);
+    validateForm();
   };
 
   const renderInputElements = () => {
@@ -198,16 +212,16 @@ const ValidatorForm = (props) => {
                 value={legalAddress.city}
               />
               <InputElement
-                name="state"
-                label="State"
-                handleInputChange={handleLegalAddressChange}
-                value={legalAddress.state}
-              />
-              <InputElement
                 name="zip"
                 label="zip"
                 handleInputChange={handleLegalAddressChange}
                 value={legalAddress.zip}
+              />
+              <InputElement
+                name="state"
+                label="State"
+                handleInputChange={handleLegalAddressChange}
+                value={legalAddress.state}
               />
               <InputElement
                 name="country"
@@ -278,7 +292,7 @@ const ValidatorForm = (props) => {
       if (event.target.value === "payroll") setPayroll(false);
       if (event.target.value === "payments") setPayments(false);
     }
-    console.log(accounts + " " + timesheet + " " + payroll + " " + payments);
+    validateForm();
   };
 
   async function handleFormSubmission(event) {
@@ -326,7 +340,7 @@ const ValidatorForm = (props) => {
     });
     const data = await response.json();
     if(data.status === "FAILURE") {
-      throw new Error (JSON.stringify(data));
+      setSubscriptionResponse(data);
     }
     setSubscriptionResponse(data);
 
@@ -340,9 +354,9 @@ const ValidatorForm = (props) => {
 
 
   return (
-    <div>
+    <div className={classes.container}>
       <h3>QuickBooks Business Profile Validator</h3>
-      <div className={classes.response}>{subscriptionResponse && <p>{JSON.stringify(subscriptionResponse)}</p>}</div>
+      <div className={classes.response}>{subscriptionResponse && <ResponseModal data={subscriptionResponse}/>}</div>
       <div>
         
         {isLoading && <p> Loading !!</p>}
@@ -384,7 +398,7 @@ const ValidatorForm = (props) => {
             />
             <label for="payments"> Payments</label>
           </div>
-          <input type="submit" value="subscribe" disabled={isFormValid} />
+          <input type="submit" value="subscribe" disabled={!isFormValid} />
         </form>}
       </div>
     </div>
