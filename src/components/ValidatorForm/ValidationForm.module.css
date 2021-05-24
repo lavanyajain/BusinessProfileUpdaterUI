@@ -60,3 +60,6 @@ form {
   width: 40%;
   float: right;
 }
+.error {
+  color: red;
+}

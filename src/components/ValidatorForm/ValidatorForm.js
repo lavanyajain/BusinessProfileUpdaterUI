@@ -156,23 +156,27 @@ const ValidatorForm = (props) => {
     formElementsConfig.map((formElement) => {
       switch (formElement.name) {
         case "companyName":
-          formElements.push(
+          formElements.push(<div>
             <InputElement
               name="companyName"
               label="Company Name"
               handleInputChange={handleCompanyChange}
               value={companyName}
             />
+            {companyName.trim().length === 0 && <p className={classes.error}>Company name must not be empty value.</p>}
+            </div>
           );
           break;
         case "legalName": 
-          formElements.push(
+          formElements.push(<div>
             <InputElement
               name="legalName"
               label="Legal Name"
               handleInputChange={handleLegalNameChange}
               value={legalName}
             />
+            {legalName.trim().length === 0 && <p className={classes.error}>Legal name must not be empty value.</p>}
+            </div>
           );
           break;
         case "taxID":
@@ -192,32 +196,39 @@ const ValidatorForm = (props) => {
               handleInputChange={handleTaxIdChange}
               value={taxId}
             />
+             {taxId.trim().length === 0 && <p className={classes.error}>PAN/EAN must not be empty value.</p>}
             </div>
           );
           break;
         case "email":
           formElements.push(
+            <div>
             <InputElement
               name="email"
               label="Email"
               handleInputChange={handleEmailChange}
               value={email}
             />
+            {email.trim().length === 0 && <p className={classes.error}>Email must not be empty value.</p>}
+            </div>
           );
           break;
         case "website":
-          formElements.push(
+          formElements.push(<div>
             <InputElement
               name="website"
               label="Website"
               handleInputChange={handleWebsiteChange}
               value={website}
             />
+            {website.trim().length === 0 && <p className={classes.error}>Website must not be empty value.</p>}
+            </div>
           );
           break;
         case "legalAddress":
           formElements.push(
             <div className={classes.address}>
+               {(legalAddress.country.trim().length === 0 || legalAddress.line1.trim().length === 0 || legalAddress.line2.trim().length === 0 || legalAddress.state.trim().length === 0 || legalAddress.city.trim().length === 0 || legalAddress.zip.trim().length === 0) && <p className={classes.error}>Legal address cannot have empty value</p>}
               <label>Legal Address</label>
               <InputElement
                 name="line1"
@@ -262,6 +273,7 @@ const ValidatorForm = (props) => {
           formElements.push(
            
             <div className={classes.address}>
+              {(businessAddress.country.trim().length === 0 || businessAddress.line1.trim().length === 0 || businessAddress.line2.trim().length === 0 || businessAddress.state.trim().length === 0 || businessAddress.city.trim().length === 0 || businessAddress.zip.trim().length === 0) && <p className={classes.error}>Business address cannot have empty value</p>}
               <label>Business Address</label>
               <InputElement
                 name="line1"
